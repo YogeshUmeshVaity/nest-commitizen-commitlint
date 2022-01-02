@@ -72,6 +72,8 @@
     "testEnvironment": "node"
   },
   "lint-staged": {
-    "*.js": "eslint --cache --fix"
+    "{src,apps,libs,test}/**/*.ts": [
+      "npm run lint"
+    ]
   }
 }

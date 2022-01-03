@@ -125,7 +125,7 @@ npx husky add .husky/pre-push 'npm test'
 
 That's it!
 
-### Enforce Commitizen flow to run on ``git commit``
+### Optional: Enforce Commitizen flow to run on ``git commit``
 
 Currently, we don't enforce the Commitizen flow on `git commit` command because of an [issue](https://github.com/commitizen/cz-cli/issues/844#issue-971205114) of commitizen flow running twice when you run the `git cz` command.
 

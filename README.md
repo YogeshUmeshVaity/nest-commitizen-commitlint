@@ -1,73 +1,104 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
+<a href="https://github.com/commitizen/cz-cli" target="_blank"><img src="https://img.shields.io/badge/commitizen-friendly-brightgreen.svg" alt="commitizen friendly" /></a>
+<a href="https://github.com/conventional-changelog/commitlint" target="_blank"><img src="https://img.shields.io/badge/commit-lint-brightgreen" alt="commitlint" /></a>
+<a href="https://typicode.github.io/husky/#/" target="_blank"><img src="https://img.shields.io/badge/husky-hooks-brightgreen" alt="husky" /></a>
+<a href="https://github.com/okonet/lint-staged" target="_blank"><img src="https://img.shields.io/badge/lint-staged-brightgreen" alt="lint-staged" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+  <p align="center">A sample NestJS repository to demonstrate how to setup Commitizen, commitlint, Husky and Lint-staged for useful commit messages.</p>
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Install Husky
 
-## Description
+It’s better to install Husky independent of lint-staged like this to make sure we get the latest version:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+```npx husky-init && npm install```
 
-## Installation
+Disable running tests in pre-commit hook by commenting the line in the file .husky/pre-commit. We’ll run tests in pre-push hook instead:
 
-```bash
-$ npm install
+```# npm test```
+
+
+## Install Lint-staged
+
+The following command installs the Lint-staged:
+
+```npx mrm@2 lint-staged```
+
+Update the lint-staged option in package.json of your project:
+
+```
+"lint-staged": {
+   "{src,apps,libs,test}/**/*.ts": [
+     "npm run lint"
+   ]
+ }
 ```
 
-## Running the app
+The snippet above also covers the prettier formatting if the prettier is configured with ESLint. NestJS comes with a built-in configuration of Prettier with ESLint. So we don’t need to add the ```npm run format``` or ```prettier``` command to this. We don’t need to add the ```"git add"``` either, because from the Lint-staged version 10 onwards, it is added automatically.
 
-```bash
-# development
-$ npm run start
+### Optional: Fail on warnings
+If you want the commit to fail, if there are warnings like unused variables or unused imports, add ```--max-warnings=0``` flag in the lint script of package.json. It would be better to just create a separate script for it. This can be used on the pre-push hook, if we want to allow the warnings during the feature development:
 
-# watch mode
-$ npm run start:dev
+```"lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix --max-warnings=0"```
 
-# production mode
-$ npm run start:prod
-```
+Not all issues are automatically fixed by ESLint. The List of auto fixable issues can be seen [here](https://eslint.org/docs/rules/).
 
-## Test
+## Install Commitizen
 
-```bash
-# unit tests
-$ npm run test
+Installing and running Commitizen in your project allows you to make sure that developers are running the exact same version of Commitizen on every machine.
 
-# e2e tests
-$ npm run test:e2e
+Install Commitizen in the project:
 
-# test coverage
-$ npm run test:cov
-```
+```npm install --save-dev commitizen```
 
-## Support
+Initialize the conventional changelog adapter:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```npx commitizen init cz-conventional-changelog --save-dev --save-exact --force```
 
-## Stay in touch
+### Enforce Commitizen to run on the ```git commit``` command
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Create the Husky hook for it and add the script to start Commitizen flow:
+
+```npx husky add .husky/prepare-commit-msg 'exec < /dev/tty && git cz --hook || true'```
+
+## Install commitlint
+
+With Commitizen, If the contributors write the git message in the traditional style, for example:
+
+```git commit -m “Add commitlint.”```
+
+Now the Commitizen flow will start. But if the user aborts the commitizen flow by pressing Ctrl + C, the commit will be done successfully with the above message. That’s against the conventional commits. So, we need the commitlint for aborting the process, if the commit doesn’t meet the standards.
+
+Install commitlint in the project:
+
+```npm install --save-dev @commitlint/config-conventional @commitlint/cli```
+
+Configure the commitlint to use conventional config:
+
+```echo "module.exports = {extends: ['@commitlint/config-conventional']}" > commitlint.config.js```
+
+The following command creates a Husky hook for commitlint and copies the script to it:
+
+```npx husky add .husky/commit-msg 'npx --no -- commitlint --edit "$1"'```
+
+## Run unit tests and lint warnings as errors on ```git push```
+This is for catching unused imports and variables in your code. Add the following new script to the scripts option of package.json:
+
+```"lint:warnings": "eslint \"{src,apps,libs,test}/**/*.ts\" --max-warnings=0"```
+ 
+Notice that we don’t have the ```--fix``` flag in this script. We want to fix manually and then commit and then push.
+
+To create ```pre-push``` Husky hook and add the script to it, run the following command:
+
+```npx husky add .husky/pre-push 'npm run lint:warnings'```
+
+To add the test script to the already created ```pre-push``` husky hook, run the following command:
+
+```npx husky add .husky/pre-push 'npm test'```
+
+
+That's it!
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+[MIT licensed](LICENSE).

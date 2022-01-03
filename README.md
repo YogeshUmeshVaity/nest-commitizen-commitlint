@@ -7,6 +7,14 @@
 
 <p align="center">A sample NestJS repository to demonstrate how to setup Commitizen, commitlint, Husky and Lint-staged for useful commit messages.</p>
 
+## Create the NestJS Project
+
+Use the Nest CLI to create the project. This makes sure that the Prettier comes preconfigured with ESLint:
+
+```
+nest new your-project-name
+```
+
 ## Install Husky
 
 It’s better to install Husky independent of lint-staged like this to make sure we get the latest version:
@@ -51,7 +59,33 @@ If you want the commit to fail, if there are warnings like unused variables or u
 
 Not all issues are automatically fixed by ESLint. The List of auto fixable issues can be seen [here](https://eslint.org/docs/rules/).
 
-## Install Commitizen
+## Install Commitizen globally
+
+Installing commitizen globally is optional, but recommended if you want to use the shorter command `git cz` for commiting.
+
+Install the package globally. You may want to add `sudo` before the command if this doesn't work:
+
+```
+npm install -g commitizen
+```
+
+Install your preferred commitizen adapter globally (for example[ cz-conventional-changelog](https://www.npmjs.com/package/cz-conventional-changelog)):
+
+```
+npm install -g cz-conventional-changelog
+```
+
+The following command creates a `.czrc` file in your home directory, with path referring to the preferred, globally-installed, commitizen adapter:
+
+```
+echo '{ "path": "cz-conventional-changelog" }' > ~/.czrc
+```
+
+Now you can `cd` into any git repository and use `git cz` instead of `git commit`. This will run the commitizen flow to make a commit. The `git commit` will still run normally whenever you want to use it.
+
+You can use all the `git commit` options with `git cz`. For example: `git cz -a`.
+
+## Install Commitizen in your project
 
 Installing and running Commitizen in your project allows you to make sure that developers are running the exact same version of Commitizen on every machine.
 

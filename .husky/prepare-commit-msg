@@ -1,4 +1,5 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
-
-exec < /dev/tty && git cz --hook || true
+# Enforcing commitizen to run on 'git commit' command is currently disabled
+# due to the issue of commitizen running twice when the flow is started with 'git cz'.
+# exec < /dev/tty && git cz --hook || true

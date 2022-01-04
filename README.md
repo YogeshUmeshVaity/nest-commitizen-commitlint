@@ -1,6 +1,7 @@
 <p align="center">
 <a href="https://github.com/commitizen/cz-cli" target="_blank"><img src="https://img.shields.io/badge/commitizen-friendly-brightgreen.svg" alt="commitizen friendly" /></a>
 <a href="https://github.com/conventional-changelog/commitlint" target="_blank"><img src="https://img.shields.io/badge/commit-lint-brightgreen" alt="commitlint" /></a>
+<a href="https://conventionalcommits.org/" target="_blank"><img src="https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg?style=flat-square" alt="conventional-commits" /></a>
 <a href="https://typicode.github.io/husky/#/" target="_blank"><img src="https://img.shields.io/badge/husky-hooks-brightgreen" alt="husky" /></a>
 <a href="https://github.com/okonet/lint-staged" target="_blank"><img src="https://img.shields.io/badge/lint-staged-brightgreen" alt="lint-staged" /></a>
 </p>
@@ -9,7 +10,9 @@
 
 ## Create the NestJS Project
 
-Use the Nest CLI to create the project. This makes sure that the Prettier comes preconfigured with ESLint:
+If you have an already existing NestJS project, skip this step.
+
+Use the Nest CLI to create the project. This makes sure that the Prettier comes pre-configured with ESLint:
 
 ```
 nest new your-project-name
@@ -42,7 +45,7 @@ Update the lint-staged option in package.json of your project:
 ```
 "lint-staged": {
    "{src,apps,libs,test}/**/*.ts": [
-     "npm run lint"
+     "eslint --fix"
    ]
  }
 ```
@@ -61,7 +64,7 @@ Not all issues are automatically fixed by ESLint. The List of auto fixable issue
 
 ## Install Commitizen globally
 
-Installing commitizen globally is optional, but recommended if you want to use the shorter command `git cz` for commiting.
+Installing commitizen globally is optional, but recommended if you want to use the shorter command `git cz` for committing.
 
 Install the package globally. You may want to add `sudo` before the command if this doesn't work:
 
@@ -113,7 +116,7 @@ Now you can use the command ``npm run commit`` to make a commit using the Commit
 
 With Commitizen, If the contributors write the git message in the traditional style, for example:
 
-``git commit -m “Add commitlint.”``
+``# git commit -m “Add commitlint.”``
 
 Now the Commitizen flow will start. But if the user aborts the commitizen flow by pressing Ctrl + C, the commit will be done successfully with the above message. That’s against the conventional commits. So, we need the commitlint for aborting the process, if the commit doesn’t meet the standards.
 
@@ -123,10 +126,10 @@ Install commitlint in the project:
 npm install --save-dev @commitlint/config-conventional @commitlint/cli
 ```
 
-Configure the commitlint to use conventional config:
+The following command creates the config file .commitlintrc and adds the conventional config:
 
 ```
-echo "module.exports = {extends: ['@commitlint/config-conventional']}" > commitlint.config.js
+echo "{\"extends\": [\"@commitlint/config-conventional\"]}" > .commitlintrc
 ```
 
 The following command creates a Husky hook for commitlint and copies the script to it:
@@ -137,7 +140,7 @@ npx husky add .husky/commit-msg 'npx --no -- commitlint --edit "$1"'
 
 ## Run unit tests and lint warnings as errors on ``git push``
 
-This is for catching unused imports and variables in your code. Add the following new script to the scripts option of package.json:
+This is for catching unused imports and variables in your code. Add the following new script to the `scripts` option of package.json:
 
 ```
 "lint:warnings": "eslint \"{src,apps,libs,test}/**/*.ts\" --max-warnings=0"
